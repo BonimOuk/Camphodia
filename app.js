@@ -19,14 +19,14 @@ var commentRoutes       = require("./routes/comments"),
     campgroundRoutes    = require("./routes/campgrounds"),
     indexRoutes          = require("./routes/index");
 
-mongoose.connect("mongodb://localhost/cam_pho_dia_21", { useNewUrlParser: true });
+mongoose.connect("mongodb://localhost/cam_pho_dia_23", { useNewUrlParser: true });
 mongoose.set('useCreateIndex', true);
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 app.use(methodOverride("_method"));
 app.use(flash());
-// seedDB(); // Seed the database
+seedDB(); // Seed the database
 
 app.locals.moment = require('moment');
 // PASSPORT CONFIGURATION

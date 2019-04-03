@@ -142,6 +142,8 @@ Each Campground has:
 * 19- Password Reset
 * 20- Fuzzy Search
 * 21- Image Upload
+* 22- Migrating to Bootstrap 4
+* 23- Refactor Callbacks in seeds.js to use Async/Await 
 
 RESTFUL ROUTES
 
