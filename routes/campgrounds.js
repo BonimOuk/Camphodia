@@ -1,7 +1,12 @@
 var express         = require("express");
 var router          = express.Router();
 var Campground      = require("../models/campground");
+var User            = require("../models/user");
+var Notification    = require("../models/notification");
 var middleware      = require("../middleware");
+var mbxGeocoding    = require('@mapbox/mapbox-sdk/services/geocoding');
+var geocodingClient = mbxGeocoding({ accessToken: process.env.MAPBOX_TOKEN });
+
 
 var multer = require('multer');
 var storage = multer.diskStorage({
@@ -56,8 +61,8 @@ router.get("/", function(req, res){
 });
 
 // CREATE ROUTE - Add new campground to DB
-router.post("/", middleware.isLoggedIn, upload.single('image'), function(req, res) {
-    cloudinary.v2.uploader.upload(req.file.path, function(err, result) {
+router.post("/", middleware.isLoggedIn, upload.single('image'), async function(req, res) {
+    cloudinary.v2.uploader.upload(req.file.path, async function(err, result) {
       if(err) {
         req.flash('error', err.message);
         return res.redirect('back');
@@ -70,14 +75,32 @@ router.post("/", middleware.isLoggedIn, upload.single('image'), function(req, re
       req.body.campground.author = {
         id: req.user._id,
         username: req.user.username
-      }
-      Campground.create(req.body.campground, function(err, campground) {
-        if (err) {
-          req.flash('error', err.message);
-          return res.redirect('back');
+      };
+      try {
+          let response = await geocodingClient
+    	    .forwardGeocode({
+    	       query: req.body.campground.location,
+    		   limit: 1
+        	})
+        	.send();
+          req.body.campground.coordinates = response.body.features[0].geometry.coordinates;
+          let campground = await Campground.create(req.body.campground);
+          let user = await User.findById(req.user._id).populate("followers").exec();
+          let newNotification = {
+              username: req.user.username,
+              campgroundId: campground.id    
+          };
+          for(const follower of user.followers) {
+              let notification = await Notification.create(newNotification);
+              follower.notifications.push(notification);
+              follower.save();
+          }
+          // Redirect back to campgrounds page
+          res.redirect('/campgrounds/' + campground.id);
+        } catch(err) {
+          req.flash("err", err.message);
+          res.redirect("back");
         }
-        res.redirect('/campgrounds/' + campground.id);
-      });
     });
 });
 
@@ -106,6 +129,7 @@ router.get("/:id/edit", middleware.checkCampgroundOwnership, function(req, res){
             res.render("campgrounds/edit", {campground: foundCampground});
         });
 });
+
 // UPDATE CAMPGROUND ROUTE
 router.put("/:id", middleware.checkCampgroundOwnership, upload.single('image'), function(req, res) {
     // Find and update the correct campground
@@ -124,6 +148,17 @@ router.put("/:id", middleware.checkCampgroundOwnership, upload.single('image'), 
                     req.flash("error", err.message);
                     return res.redirect("back");
                 }
+            }
+            // Check if location was updated
+            if(req.body.campground.location !== campground.location) {
+                let response = await geocodingClient
+            	    .forwardGeocode({
+            	       query: req.body.campground.location,
+            		   limit: 1
+                	})
+                	.send();
+                campground.coordinates = response.body.features[0].geometry.coordinates;
+                campground.location = req.body.campground.location;
             }
             campground.name = req.body.name;
             campground.price = req.body.price;

@@ -144,6 +144,8 @@ Each Campground has:
 * 21- Image Upload
 * 22- Migrating to Bootstrap 4
 * 23- Refactor Callbacks in seeds.js to use Async/Await 
+* 24- In-app Notifications
+* 25- Mapbox API
 
 RESTFUL ROUTES
 

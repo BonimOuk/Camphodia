@@ -8,11 +8,14 @@
         <title>
             Camphodia
         </title>
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+        <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.js'></script>
+        <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.css' rel='stylesheet' />
         
     </head>
     <body>
         
-        <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4 sticky-top">
           <a class="navbar-brand" href="/">Camphodia</a>
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -33,6 +36,21 @@
                         <a class="nav-link" href="/register">Sign Up</a>
                     </li>
                 <% } else { %>
+                    <li class="dropdown nav-item">
+                        <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Notifications <span class="badge"><%= notifications.length %></span></a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="/notifications">View past notifications</a>
+                            </li>
+                            <% notifications.forEach(function(notification) { %>                          
+                                <li>
+                                    <a href="/notifications/<%= notification.id %>">
+                                        <%= notification.username %> created a new campground
+                                    </a>
+                                </li>
+                            <% }); %>
+                        </ul>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Signed In As <%= currentUser.username %></a>
                     </li>
@@ -57,4 +75,3 @@
             <% } %>
         </div>
         <div class="container">
-        

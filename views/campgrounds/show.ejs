@@ -3,7 +3,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-3">
-            <!-- Keep this space for map-->
+            <div id="map"></div>
         </div>
         <div class="col-md-9">
             <div class="card mb-3">
@@ -23,7 +23,7 @@
                             <button class="btn btn-danger">Delete</button>
                         </form>
                     <% } %>
-                    <a href="/campgrounds/<%= campground._id %>" class="btn btn-primary">More Info</a>
+                    <!--<a href="/campgrounds/<%= campground._id %>" class="btn btn-primary">More Info</a>-->
                 </div>
             </div>
             
@@ -55,12 +55,7 @@
                                                 </div>
                                             <% } %>
                                         </div>
-                                        
-                                        
-                                        
-                                        
                                     </div>
-                                    
                                 </div>
                             </div>
                         </div>
@@ -71,6 +66,30 @@
     </div>
 </div>
 
+<!-- For Mapbox Use -->
+<script>
 
+var campground = <%- JSON.stringify(campground) %>;
+mapboxgl.accessToken = 'pk.eyJ1IjoiYm9uaW0iLCJhIjoiY2pyc2hmejE1MGl3MDQ0bXkyaWd4b3BiZSJ9._4b9c_xhq21lJrZqoB70oA';
+
+var map = new mapboxgl.Map({
+  container: 'map',
+  style: 'mapbox://styles/mapbox/light-v10',
+  center: campground.coordinates,
+  zoom: 5
+});
+
+// create a HTML element for our campground location/marker
+var el = document.createElement('div');
+el.className = 'marker';
+
+// make a marker for our location and add to the map
+new mapboxgl.Marker(el)
+    .setLngLat(campground.coordinates)
+    .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+    .setHTML('<h3>' + campground.name + '</h3><p>' + campground.location + '</p>'))
+    .addTo(map);
+
+</script>
 
 <% include ../partials/footer %>
