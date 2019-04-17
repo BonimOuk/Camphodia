@@ -146,6 +146,7 @@ Each Campground has:
 * 23- Refactor Callbacks in seeds.js to use Async/Await 
 * 24- In-app Notifications
 * 25- Mapbox API
+* 26- Like Button
 
 RESTFUL ROUTES
 

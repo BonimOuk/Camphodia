@@ -91,3 +91,7 @@ body {
     text-align: center;
     font-family: 'Open Sans', sans-serif;
 }
+
+.like {
+  padding-bottom: 10px;
+}
