@@ -20,7 +20,7 @@ var commentRoutes       = require("./routes/comments"),
     campgroundRoutes    = require("./routes/campgrounds"),
     indexRoutes          = require("./routes/index");
 
-mongoose.connect("mongodb://localhost/cam_pho_dia_like", { useNewUrlParser: true });
+mongoose.connect("mongodb://localhost/cam_pho_dia_27", { useNewUrlParser: true });
 mongoose.set('useCreateIndex', true);
 app.use(bodyParser.urlencoded({extended: true}));
 // use ejs-locals for all ejs templates:

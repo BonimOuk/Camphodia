@@ -147,6 +147,7 @@ Each Campground has:
 * 24- In-app Notifications
 * 25- Mapbox API
 * 26- Like Button
+* 27-Comment on the Show Page
 
 RESTFUL ROUTES
 
