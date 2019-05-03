@@ -10,10 +10,11 @@ var campgroundSchema = new mongoose.Schema({
    coordinates: Array,
    createdAt: {type: Date, default: Date.now},
    author: {
-      id: {
-         type: mongoose.Schema.Types.ObjectId,
-         ref: "User"
-      },
+       id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User" 
+       },
+         
       username: String
    },
    comments: [
