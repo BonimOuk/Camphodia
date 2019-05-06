@@ -130,7 +130,6 @@ router.post("/:id/like", middleware.isLoggedIn, function (req, res) {
             console.log(err);
             return res.redirect("/campgrounds");
         }
-
         // check if req.user._id exists in foundCampground.likes
         var foundUserLike = foundCampground.likes.some(function (like) {
             return like.equals(req.user._id);

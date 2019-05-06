@@ -13,14 +13,16 @@ var express         = require("express"),
     seedDB          = require("./seeds");
     
 // Configure dotenv
-require('dotenv/config');
+if (process.env.NODE_ENV !== 'production') require('dotenv').config();
+
 
 // Requiring Routes
 var commentRoutes       = require("./routes/comments"),
     campgroundRoutes    = require("./routes/campgrounds"),
     indexRoutes          = require("./routes/index");
 
-mongoose.connect("mongodb+srv://camcody:eCamcody&2829@cluster0-2xf3i.mongodb.net/test?retryWrites=true", {
+var url = process.env.DATABASE_URL || "mongodb://localhost/cam_pho_dia_28";
+mongoose.connect(process.env.DATABASE_URL, {
     useNewUrlParser: true,
     useCreateIndex: true
 }).then(() => {
@@ -29,8 +31,6 @@ mongoose.connect("mongodb+srv://camcody:eCamcody&2829@cluster0-2xf3i.mongodb.net
     console.log('ERROR:', err.message);
 });
 
-// mongoose.connect("mongodb://localhost/cam_pho_dia_28", { useNewUrlParser: true });
-// mongoose.set('useCreateIndex', true);
 app.use(bodyParser.urlencoded({extended: true}));
 // use ejs-locals for all ejs templates:
 app.engine('ejs', engine);
