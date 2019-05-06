@@ -1,3 +1,6 @@
+// Configure dotenv
+if (process.env.NODE_ENV !== 'production') require('dotenv').config();
+
 var express         = require("express"),
     engine          = require('ejs-mate'),
     app             = express(), 
@@ -12,8 +15,7 @@ var express         = require("express"),
     User            = require("./models/user"),
     seedDB          = require("./seeds");
     
-// Configure dotenv
-if (process.env.NODE_ENV !== 'production') require('dotenv').config();
+
 
 
 // Requiring Routes
