@@ -33,29 +33,51 @@ cloudinary.config({
 // We need to replace all app. with router in this case
 // INDEX ROUTE - Show all campgrounds
 router.get("/", function(req, res){
+    var perPage = 8;
+    var pageQuery = parseInt(req.query.page);
+    var pageNumber = pageQuery ? pageQuery : 1;
     var noMatch = null;
     if(req.query.search) {
         const regex = new RegExp(escapeRegex(req.query.search), 'gi');
-        Campground.find({name: regex}, function(err, allCampgrounds){
-           if(err){ 
-               console.log(err);
-           } else {
-               if(allCampgrounds.length < 1) {
-                   noMatch = "No campgrounds match that query, please try again.";
+        Campground.find({name: regex}).skip((perPage * pageNumber) - perPage).limit(perPage).exec(function (err, allCampgrounds) {
+           Campground.countDocuments({name: regex}).exec(function (err, countDocuments) {
+               if(err){ 
+                   console.log(err);
+               } else {
+                   if(allCampgrounds.length < 1) {
+                       noMatch = "No campgrounds match that query, please try again.";
+                   }
+                    // We take override currentUser: req.user from below line, by using app.use(function(req, res, next)...
+                    res.render("campgrounds/index", {
+                        campgrounds:allCampgrounds, 
+                        // page: 'campgrounds', 
+                        current: pageNumber,
+                        pages: Math.ceil(countDocuments / perPage),
+                        noMatch: noMatch,
+                        search: req.query.search
+                    });
                }
-                // We take override currentUser: req.user from below line, by using app.use(function(req, res, next)...
-                res.render("campgrounds/index", {campgrounds:allCampgrounds, page: 'campgrounds', noMatch: noMatch});
-           }
+           });
         });
     } else {
         // Get all campgrounds from DB
-        Campground.find({}, function(err, allCampgrounds){
-           if(err){ 
-               console.log(err);
-           } else {
-                // We take override currentUser: req.user from below line, by using app.use(function(req, res, next)...
-                res.render("campgrounds/index", {campgrounds:allCampgrounds, page: 'campgrounds', noMatch: noMatch});
-           }
+        Campground.find({}).skip((perPage * pageNumber) - perPage).limit(perPage).exec(function (err, allCampgrounds) {
+            Campground.countDocuments().exec(function (err, countDocuments) {
+                if(err){ 
+                   console.log(err);
+               } else {
+                    // We take override currentUser: req.user from below line, by using app.use(function(req, res, next)...
+                    res.render("campgrounds/index", {
+                        campgrounds:allCampgrounds, 
+                        // page: 'campgrounds', 
+                        current: pageNumber,
+                        pages: Math.ceil(countDocuments / perPage),
+                        noMatch: noMatch,
+                        search: false
+                    });
+                }
+            });
+           
         });
     }
 });
