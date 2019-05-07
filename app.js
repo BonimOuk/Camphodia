@@ -20,8 +20,8 @@ var commentRoutes       = require("./routes/comments"),
     campgroundRoutes    = require("./routes/campgrounds"),
     indexRoutes          = require("./routes/index");
 
-// var url = process.env.DATABASE_URL || "mongodb://localhost/cam_pho_dia_28";
-mongoose.connect("mongodb+srv://camcody:eCamcody&2829@cluster0-2xf3i.mongodb.net/test?retryWrites=true", {
+var url = process.env.DATABASE_URL || "mongodb://localhost/cam_pho_dia_28";
+mongoose.connect(url, {
     useNewUrlParser: true,
     useCreateIndex: true
 }).then(() => {
