@@ -225,7 +225,7 @@ router.put("/:id", middleware.checkCampgroundOwnership, upload.single('image'), 
 
 // DESTROY CAMPGROUND ROUTE
 router.delete("/:id", middleware.checkCampgroundOwnership, function(req, res) {
-    Campground.findByIdAndRemove(req.params.id, async function(err, campground) {
+    Campground.findOneAndDelete(req.params.id, async function(err, campground) {
         if(err){
             req.flash("error", err.message);
             return res.redirect("back");
